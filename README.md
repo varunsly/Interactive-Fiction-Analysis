@@ -75,10 +75,10 @@ The dataset is sourced from an online repository, and the project downloads it u
   - Fine-tuned and one-shot models are compared using precision and recall.
 - **Evaluation Metrics**: The results of the text generation models are evaluated based on how well they predict the properties of objects.
 
-## Contributing
+## Acknowledgments
 
-Feel free to open issues or submit pull requests. Contributions are always welcome!
-
+ - This project uses the LIGHT dataset created by Facebook AI Research.
+ - The project leverages OpenAI's GPT models for predictions.
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
