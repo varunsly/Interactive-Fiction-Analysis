@@ -55,9 +55,7 @@ pip install requests numpy pandas scikit-learn openai
    cd interactive-fiction-analysis
    ```
 
-2. Run the Jupyter Notebook (`hw2.ipynb`) to execute the data analysis, item generation, and evaluation processes.
-
-3. Update your OpenAI API key in the relevant code cells to use the GPT models for text generation.
+2. Update your OpenAI API key in the relevant code cells to use the GPT models for text generation.
 
 ## Data Loading and Exploration
 
