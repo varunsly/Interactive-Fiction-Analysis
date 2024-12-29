@@ -7,9 +7,13 @@ This repository contains code for analyzing and interacting with datasets relate
 - [Features](#features)
 - [Setup and Requirements](#setup-and-requirements)
 - [Usage](#usage)
-- [Dataset Information](#dataset-information)
-- [Code Overview](#code-overview)
-- [Contributing](#contributing)
+- [Data Loading and Exploration](#data-loading-and-exploration)
+- [Fine-Tuning Data Preparation](#fine-tuning-data-preparation)
+- [Fine-Tuning GPT Models](#fine-tuning-gpt-models)
+- [Zero-shot, One-shot, and Few-shot Prompting](#zero-shot-one-shot-and-few-shot-prompting)
+- [Evaluation](#evaluation)
+- [Key Observations](#key-observations)
+- [Conclusion](#conclusion)
 - [License](#license)
 
 ## Introduction
@@ -55,30 +59,98 @@ pip install requests numpy pandas scikit-learn openai
 
 3. Update your OpenAI API key in the relevant code cells to use the GPT models for text generation.
 
-## Dataset Information
+## Data Loading and Exploration
 
-The dataset used in this project is the LIGHT environment dataset, which consists of:
-- **Rooms**: Different locations within the LIGHT world.
-- **Characters**: Inhabitants of the LIGHT world with different properties.
-- **Objects**: Items that can be found, used, or interacted with in different rooms.
+The script loads the LIGHT dataset in JSON format, which includes:
+- **Categories:** Classifications like "Graveyard," "Forest," etc.
+- **Rooms:** Represent game settings, including descriptions, characters, objects, and neighboring rooms.
+- **Characters:** Defined by type (e.g., person, creature), descriptions, and inventory.
+- **Objects:** Includes properties like `is_container`, `is_weapon`, etc.
 
-The dataset is sourced from an online repository, and the project downloads it using `wget` and `curl` commands.
+### Key Functions
+- `get_categories()`: Retrieves all categories from the dataset.
+- `print_rooms_for_category(category)`: Lists rooms under a specific category.
+- `make_connections()`: Displays connections between rooms (as a graph structure).
+- `count_character_types()`: Summarizes the number of each type of character in the dataset.
 
-## Code Overview
+---
 
-- **Data Loading**: The dataset is loaded from JSON files and parsed to extract relevant information about rooms, characters, and objects.
-- **Data Analysis**: Various analysis functions are provided, such as:
-  - Getting categories of rooms.
-  - Grouping rooms by their categories.
-  - Extracting and counting character types.
-- **Machine Learning Integration**: The project uses the OpenAI API to generate and evaluate item descriptions for interactive fiction:
-  - Fine-tuned and one-shot models are compared using precision and recall.
-- **Evaluation Metrics**: The results of the text generation models are evaluated based on how well they predict the properties of objects.
+## Fine-Tuning Data Preparation
 
-## Acknowledgments
+The script prepares data for fine-tuning OpenAI GPT models using the LIGHT dataset.
 
- - This project uses the LIGHT dataset created by Facebook AI Research.
- - The project leverages OpenAI's GPT models for predictions.
+### Steps:
+1. **Location Descriptions:**
+   - Extracts `category`, `setting`, and `description` for rooms.
+   - Creates JSONL data with:
+     - `prompt`: Category + setting.
+     - `completion`: Room description.
+
+2. **Object Properties:**
+   - Extracts object names, descriptions, and properties (`is_weapon`, `is_food`, etc.).
+   - Creates JSONL data with:
+     - `prompt`: Item information.
+     - `completion`: True/False for each property.
+
+### Output
+- JSONL files are generated for fine-tuning, such as `fine_tuning_location_descriptions.jsonl`.
+
+---
+
+## Fine-Tuning GPT Models
+
+The script uses OpenAI's API to fine-tune models like `babbage-002`.
+
+### Workflow:
+1. Uploads training data via the OpenAI API.
+2. Creates fine-tuning jobs with training files.
+3. Evaluates the fine-tuned model’s performance.
+
+### Key Models
+- Fine-tuning is demonstrated with models like `babbage-002`.
+
+---
+
+## Zero-shot, One-shot, and Few-shot Prompting
+
+The script experiments with different prompting strategies to determine object properties:
+- **Zero-shot:** Queries the model directly without examples.
+- **One-shot:** Provides one example before querying the model.
+- **Five-shot:** Provides multiple examples to guide the model.
+
+### Prompts Include:
+- Item name and description.
+- A list of properties (e.g., `is_weapon`, `is_food`).
+- The model predicts True/False for each property.
+
+---
+
+## Evaluation
+
+The script evaluates fine-tuned and one-shot models using **precision** and **recall** metrics.
+
+### Steps:
+1. Generate predictions for object properties.
+2. Compare predictions with true labels from the dataset.
+3. Calculate precision and recall for each property (e.g., `is_gettable`, `is_weapon`).
+
+### Metrics:
+- **Precision:** Proportion of correctly predicted properties out of all predictions.
+- **Recall:** Proportion of correctly predicted properties out of all true properties.
+
+---
+
+## Key Observations
+1. **Data-Driven Approach:** The script thoroughly explores the dataset, analyzing categories, rooms, characters, and objects.
+2. **Fine-Tuning Workflow:** Demonstrates a complete process for preparing and fine-tuning OpenAI GPT models.
+3. **Evaluation Framework:** Implements precision and recall metrics to evaluate model performance.
+
+---
+
+## Conclusion
+
+The script provides a comprehensive framework for leveraging the LIGHT dataset in interactive fiction research. It demonstrates how fine-tuned and prompted GPT models can enhance game development by generating and analyzing game elements.
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
